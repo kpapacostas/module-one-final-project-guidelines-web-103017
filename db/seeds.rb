@@ -1,3 +1,5 @@
+require 'csv'
+require_relative '../app/models/song.rb'
 require_relative '../app/models/recipes_adapter_class.rb'
 require_relative '../config/environment.rb'
 require_relative '../app/models/recipe.rb'
@@ -63,4 +65,8 @@ beer = DrinkAdapter.get_drinks_from_api("beer")
 beer.each do |row|
   ingredients = row["ingredients"].map{|ing| ing["textPlain"]}
   Drink.create(name: row["name"], ingredients: ingredients.join(', '), instructions: row["descriptionPlain"], liquor: "BEER" )
+end
+
+CSV.foreach('db/songs.csv') do |row|
+  Song.create(title: row[0], artist: row[1], genre: row[2], song_link: row[3])
 end
