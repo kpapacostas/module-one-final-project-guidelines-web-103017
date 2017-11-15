@@ -4,11 +4,9 @@ class User < ActiveRecord::Base
   has_many :recipes, through: :date_cards
   has_many :playlists, through: :date_cards
 
-  def initialize(name, date_name)
-    @name = name
-    @date_name = date_name
-    DateCard.new(user_id = self.id)
+  after_initialize do
+    new_card = DateCard.create(user_id: self.id)
+    new_card.save
   end
-
 
 end

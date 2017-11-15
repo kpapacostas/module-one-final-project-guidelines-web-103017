@@ -1,2 +1,3 @@
-class DateCard < ActiveRecord::Base 
+class DateCard < ActiveRecord::Base
+  
 end
