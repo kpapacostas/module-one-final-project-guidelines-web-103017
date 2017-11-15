@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171115154526) do
+ActiveRecord::Schema.define(version: 20171115162729) do
+
+  create_table "date_cards", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "recipe_id"
+    t.integer "drink_id"
+    t.string  "playlist_id"
+  end
 
   create_table "drinks", force: :cascade do |t|
     t.string "name"
@@ -20,9 +27,7 @@ ActiveRecord::Schema.define(version: 20171115154526) do
   end
 
   create_table "playlists", force: :cascade do |t|
-    t.string "title"
-    t.string "artist"
-    t.string "genre"
+    t.string "name"
   end
 
   create_table "recipes", force: :cascade do |t|
@@ -30,6 +35,17 @@ ActiveRecord::Schema.define(version: 20171115154526) do
     t.string "url"
     t.string "ingredients"
     t.string "cuisine"
+  end
+
+  create_table "songs", force: :cascade do |t|
+    t.string "title"
+    t.string "artist"
+    t.string "genre"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "name"
+    t.string "date_name"
   end
 
 end

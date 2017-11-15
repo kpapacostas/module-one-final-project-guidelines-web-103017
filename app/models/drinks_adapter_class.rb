@@ -9,6 +9,3 @@ class DrinkAdapter
     drinks_hash["result"]
   end
 end
-
-
-true
