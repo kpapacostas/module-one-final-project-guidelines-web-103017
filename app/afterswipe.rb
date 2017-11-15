@@ -4,6 +4,7 @@ require_relative '../app/models/drink.rb'
 require_relative '../app/models/date_card.rb'
 require_relative '../app/models/user.rb'
 require_relative '../app/models/song.rb'
+require_relative '../app/models/playlist_date_card.rb'
 
 #greeting
 #users name
@@ -13,7 +14,7 @@ require_relative '../app/models/song.rb'
 #date_card presentation
 class AfterSwipe
 
-  attr_accessor :name, :date_name
+  attr_accessor :name, :date_name, :new_user
 
   def greeting
     puts "Welcome Dater! We're glad you're taking charge of your dating experience! Follow prompts to add to your date card."
@@ -32,8 +33,9 @@ class AfterSwipe
   end
 
   def create_user
-    new_user = User.create(name: @name, date_name: @date_name)
-    new_user.save
+    @new_user = User.create(name: @name, date_name: @date_name)
+    @new_user.save
+    @new_user.init_dc
   end
 
   def recipe_questions
@@ -41,7 +43,7 @@ class AfterSwipe
     @cuisine_type = gets.chomp.upcase
     recipes = Recipe.where(cuisine: "#{@cuisine_type}")
     q = recipes.sample
-    v = RecipeDateCard.create(recipe_id: q.id, date_card_id: self.user.date_card.id)
+    v = RecipeDateCard.create(recipe_id: q.id, date_card_id: @new_user.date_card.id)
     #find cuisine type on database and save id to datecard table with the matching user id
   end
 
@@ -56,8 +58,12 @@ class AfterSwipe
     puts "What kind of music would you like to set the mood for #{@date_name}?\n" "Choose from the following genres:\n" "R & B\n" "Top 40\n" "Country\n" "Jazz\n" "Rock 'n' Roll\n"
     @genre = gets.chomp.upcase
     playlist = Song.where(genre: "#{@genre}")
+    binding.pry
+
+    v = PlaylistDateCard.create(song: q.id, date_card_id: @new_user.date_card.id)
   end
-binding.pry
+  binding.pry
+
 end
 #
 # as = AfterSwipe.new
