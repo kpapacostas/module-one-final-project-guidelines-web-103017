@@ -11,4 +11,6 @@ class RecipeAdapter
 end
 
 
+
+
 RecipeAdapter.get_recipes_from_api("mexican")
