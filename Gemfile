@@ -10,4 +10,6 @@ gem "json"
 gem "rest-client"
 gem "rake"
 gem "colorator"
-gem 'scbi_headers'
+gem 'tco'
+gem 'rmagick'
+gem 'catpix'

@@ -189,7 +189,7 @@ class AfterSwipe
     puts "#{@songs_proper[4].song_link}\n".green
     puts "|===============================================================================|"
     puts "\n"
-    puts "Happy dating #{@name}! Hope it goes well with #{@date_name} ;)".cyan.bold
+    puts "Happy dating #{@name}! Hope it goes well with #{@date_name} ;)\n\n".cyan.bold
   end
 
   def self.runner
