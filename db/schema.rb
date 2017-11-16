@@ -10,13 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171115221212) do
+ActiveRecord::Schema.define(version: 20171116141858) do
 
   create_table "date_cards", force: :cascade do |t|
     t.integer "user_id"
     t.integer "recipe_id"
     t.integer "drink_id"
     t.string  "playlist_id"
+  end
+
+  create_table "drink_date_cards", force: :cascade do |t|
+    t.integer "date_card_id"
+    t.integer "drink_id"
   end
 
   create_table "drinks", force: :cascade do |t|
@@ -29,6 +34,11 @@ ActiveRecord::Schema.define(version: 20171115221212) do
   create_table "playlist_date_cards", force: :cascade do |t|
     t.integer "song_id"
     t.integer "date_card_id"
+  end
+
+  create_table "recipe_date_cards", force: :cascade do |t|
+    t.integer "date_card_id"
+    t.integer "recipe_id"
   end
 
   create_table "recipes", force: :cascade do |t|
