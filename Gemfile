@@ -9,3 +9,5 @@ gem "pry"
 gem "json"
 gem "rest-client"
 gem "rake"
+gem "colorator"
+gem 'scbi_headers'
