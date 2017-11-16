@@ -17,7 +17,7 @@ require_relative '../app/models/drink_date_card.rb'
 #date_card presentation
 class AfterSwipe
 
-  attr_accessor :name, :date_name, :new_user
+  attr_accessor :name, :date_name, :new_user, :date_card
 
   def greeting
     puts "Welcome Dater! We're glad you're taking charge of your dating experience! Follow prompts to add to your date card."
@@ -38,19 +38,29 @@ class AfterSwipe
   def create_user
     @new_user = User.create(name: @name, date_name: @date_name)
     @new_user.save
-    @new_user.init_dc
+  end
+
+  def init_dc
+    new_card = DateCard.create
+    new_card.user_id = @new_user.id
+    new_card.save
+    @date_card = new_card
   end
 
   def check_choices
-    if !PlaylistDateCard.where(date_card_id: @new_user.date_card_id)
-      self.playlist_options
-    elsif !RecipeDateCard.where(date_card_id: @new_user.date_card_id)
-      self.recipe_questions
-    elsif !DrinkDateCard.where(date_card_id: @new_user.date_card_id)
-      self.drinks_questions
-    else
-      
 
+    if @date_card.playlist_id == nil
+      self.playlist_options
+      # self.check_choices
+    elsif @date_card.drink_id == nil
+      self.drinks_questions
+      # self.check_choices
+    elsif @date_card.recipe_id == nil
+      self.recipe_questions
+      # self.check_choices
+    else
+      self.date_card_presentation
+    end
   end
 
   def recipe_questions
@@ -58,7 +68,8 @@ class AfterSwipe
     @cuisine_type = gets.chomp.upcase
     recipes = Recipe.where(cuisine: "#{@cuisine_type}")
     recipe = recipes.sample
-    RecipeDateCard.create(recipe_id: recipe.id, date_card_id: @new_user.date_card.id)
+    recipe.date_cards << @date_card
+    self.check_choices
   end
 
   def drinks_questions
@@ -66,7 +77,8 @@ class AfterSwipe
     @liquor_type = gets.chomp.upcase
     drinks = Drink.where(liquor: "#{@liquor_type}")
     drink = drinks.sample
-    DrinkDateCard.create(drink_id: drink.id, date_card_id: @new_user.date_card.id)
+    drink.date_cards << @date_card
+    self.check_choices
   end
 
   def playlist_options
@@ -75,8 +87,9 @@ class AfterSwipe
     playlist = Song.where(genre: "#{@genre}")
 
     playlist.each do |song|
-      PlaylistDateCard.create(song_id: song.id, date_card_id: @new_user.date_card.id)
+      PlaylistDateCard.create(date_card_id: @date_card.id, song_id: song.id)
     end
+    self.check_choices
   end
 
   def initial_prompt
@@ -84,7 +97,6 @@ class AfterSwipe
     @first_choice = gets.chomp.upcase
     if @first_choice == "FOOD"
       self.recipe_questions
-      binding.pry
     elsif @first_choice == "DRINKS"
       self.drinks_questions
     elsif @first_choice == "MUSIC"
@@ -94,12 +106,15 @@ class AfterSwipe
       self.initial_prompt
     end
   end
-
   binding.pry
+  def date_card_presentation
+    puts "We made it!"
+  end
 
 end
-#
+
 # as = AfterSwipe.new
-# as.get_date_name
 # as.get_name
+# as.get_date_name
 # as.create_user
+# as.initial_prompt
