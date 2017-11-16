@@ -9,12 +9,6 @@ require_relative '../app/models/recipe_date_card.rb'
 require_relative '../app/models/drink_date_card.rb'
 
 
-#greeting
-#users name
-#date name
-#what would like to add to your dc?
-#recipe/drinks/playlist
-#date_card presentation
 class AfterSwipe
 
   attr_accessor :name, :date_name, :new_user, :date_card
@@ -49,15 +43,12 @@ class AfterSwipe
 
   def check_choices
 
-    if @date_card.playlist_id == nil
+    if !PlaylistDateCard.where(date_card_id: @date_card.id)
       self.playlist_options
-      # self.check_choices
     elsif @date_card.drink_id == nil
       self.drinks_questions
-      # self.check_choices
     elsif @date_card.recipe_id == nil
       self.recipe_questions
-      # self.check_choices
     else
       self.date_card_presentation
     end
@@ -106,11 +97,32 @@ class AfterSwipe
       self.initial_prompt
     end
   end
-  binding.pry
-  def date_card_presentation
-    puts "We made it!"
-  end
 
+  def date_card_presentation
+    puts "Congratulations, you've created the perfect date!\n" "Press enter to see your Date Card!\n"
+    recipe = Recipe.where(id: @date_card.recipe_id)
+    puts "You'll be making #{@date_name} #{recipe[0].title}!"
+    puts "Here are the things you need to buy:\n" "#{recipe[0].ingredients}"
+    puts "Here are your instructions:\n""#{recipe[0].url}"
+
+    drink = Drink.where(id:@date_card.drink_id)
+    puts "You two will be drinking #{drink[0].name}!"
+    puts "Here's what you'll need:\n" "#{drink[0].ingredients}\n"
+    puts "Here's how to make it:\n" "#{drink[0].instructions}"
+
+    playlist = PlaylistDateCard.where(date_card_id: @date_card.id)
+    playlist_songs = playlist.map do |song|
+      Song.where(id: song.song_id)
+    end
+    songs_proper = playlist_songs.flatten
+    puts "Here is everything you'll need to really set the mood!\n"
+    puts "#{songs_proper[0].title} by #{songs_proper[0].artist}\n" "#{songs_proper[0].song_link}\n"
+    puts "#{songs_proper[1].title} by #{songs_proper[1].artist}\n" "#{songs_proper[1].song_link}\n"
+    puts "#{songs_proper[2].title} by #{songs_proper[2].artist}\n" "#{songs_proper[2].song_link}\n"
+    puts "#{songs_proper[3].title} by #{songs_proper[3].artist}\n" "#{songs_proper[3].song_link}\n"
+    puts "#{songs_proper[4].title} by #{songs_proper[4].artist}\n" "#{songs_proper[4].song_link}\n"
+  end
+binding.pry
 end
 
 # as = AfterSwipe.new
