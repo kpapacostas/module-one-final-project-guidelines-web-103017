@@ -14,7 +14,7 @@ class AfterSwipe
   attr_accessor :name, :date_name, :new_user, :date_card
 
   def greeting
-    puts "Welcome Dater! We're glad you're taking charge of your dating experience! Follow prompts to add to your date card."
+    puts "Welcome Dater! We're glad you're taking charge of your dating experience! Follow prompts to add to your date card, and plan the perfect night."
   end
 
   def get_name
@@ -43,7 +43,7 @@ class AfterSwipe
 
   def check_choices
 
-    if !PlaylistDateCard.where(date_card_id: @date_card.id)
+    if PlaylistDateCard.where(date_card_id: @date_card.id) == []
       self.playlist_options
     elsif @date_card.drink_id == nil
       self.drinks_questions
@@ -80,6 +80,13 @@ class AfterSwipe
     playlist.each do |song|
       PlaylistDateCard.create(date_card_id: @date_card.id, song_id: song.id)
     end
+
+    playlist = PlaylistDateCard.where(date_card_id: @date_card.id)
+    playlist_songs = playlist.map do |song|
+            Song.where(id: song.song_id)
+        end
+    @songs_proper = playlist_songs.flatten
+
     self.check_choices
   end
 
@@ -98,6 +105,7 @@ class AfterSwipe
     end
   end
 
+
   def date_card_presentation
     puts "Congratulations, you've created the perfect date!\n" "Press enter to see your Date Card!\n"
     recipe = Recipe.where(id: @date_card.recipe_id)
@@ -106,27 +114,25 @@ class AfterSwipe
     puts "Here are your instructions:\n""#{recipe[0].url}"
 
     drink = Drink.where(id:@date_card.drink_id)
-    puts "You two will be drinking #{drink[0].name}!"
+    puts "You two will be drinking #{drink[0].name}s!"
     puts "Here's what you'll need:\n" "#{drink[0].ingredients}\n"
     puts "Here's how to make it:\n" "#{drink[0].instructions}"
 
-    playlist = PlaylistDateCard.where(date_card_id: @date_card.id)
-    playlist_songs = playlist.map do |song|
-      Song.where(id: song.song_id)
-    end
-    songs_proper = playlist_songs.flatten
     puts "Here is everything you'll need to really set the mood!\n"
-    puts "#{songs_proper[0].title} by #{songs_proper[0].artist}\n" "#{songs_proper[0].song_link}\n"
-    puts "#{songs_proper[1].title} by #{songs_proper[1].artist}\n" "#{songs_proper[1].song_link}\n"
-    puts "#{songs_proper[2].title} by #{songs_proper[2].artist}\n" "#{songs_proper[2].song_link}\n"
-    puts "#{songs_proper[3].title} by #{songs_proper[3].artist}\n" "#{songs_proper[3].song_link}\n"
-    puts "#{songs_proper[4].title} by #{songs_proper[4].artist}\n" "#{songs_proper[4].song_link}\n"
+    puts "#{@songs_proper[0].title} by #{@songs_proper[0].artist}\n" "#{@songs_proper[0].song_link}\n"
+    puts "#{@songs_proper[1].title} by #{@songs_proper[1].artist}\n" "#{@songs_proper[1].song_link}\n"
+    puts "#{@songs_proper[2].title} by #{@songs_proper[2].artist}\n" "#{@songs_proper[2].song_link}\n"
+    puts "#{@songs_proper[3].title} by #{@songs_proper[3].artist}\n" "#{@songs_proper[3].song_link}\n"
+    puts "#{@songs_proper[4].title} by #{@songs_proper[4].artist}\n" "#{@songs_proper[4].song_link}\n"
   end
-binding.pry
-end
 
-# as = AfterSwipe.new
-# as.get_name
-# as.get_date_name
-# as.create_user
-# as.initial_prompt
+  def self.runner
+    newb = AfterSwipe.new
+    newb.greeting
+    newb.get_name
+    newb.get_date_name
+    newb.create_user
+    newb.init_dc
+    newb.initial_prompt
+  end
+end
